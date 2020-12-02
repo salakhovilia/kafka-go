@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"sync"
@@ -596,12 +597,14 @@ func (w *Writer) WriteMessages(ctx context.Context, msgs ...Message) error {
 	for i, msg := range msgs {
 		topic, err := w.chooseTopic(msg)
 		if err != nil {
-			return err
+			fmt.Println(err)
+			continue
 		}
 
 		numPartitions, err := w.partitions(ctx, topic)
 		if err != nil {
-			return err
+			fmt.Println(err)
+			continue
 		}
 
 		partition := balancer.Balance(msg, loadCachedPartitions(numPartitions)...)
